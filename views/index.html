@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <script>
+  </script>
+  <body>
+    <h1>Works!</h1>
+    <input id="alertText" type="text" placeholder="alert text"/>
+    <button id="btn">Alert me</button>
+  </body>
+  <script>
+    // this will happen implicitly later
+    window.external.invoke(JSON.stringify({type: "load_js", fileName: "runtime.js"}))
+    window.onRuntimeLoad = function() {
+      window.__runtime.loadJs("bundle.js")
+    }
+  </script>
+</html>
