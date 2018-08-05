@@ -3,11 +3,11 @@
 <plist version="1.0">
   <dict>
     <key>CFBundleExecutable</key>
-    <string></string>
+    <string>zeno</string>
     <key>CFBundleIconFile</key>
-    <string>Z</string>
-    <!-- <key>CFBundlePackageType</key> -->
-    <!-- <string>APPL</string> -->
+    <string>zeno</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
     <key>CFBundleIdentifier</key>
     <string>com.zeno.app</string>
     <key>NSHighResolutionCapable</key>

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-base_dir="dist/zeno.app/Contents/MacOS"
+base_dir="dist"
 rm -rf ${base_dir} && ./build-app.sh
