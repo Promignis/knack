@@ -1,5 +1,4 @@
 if(window){
-  console.log("runtime loading");
   (function(){
     window.__runtime = Object.assign(window.__runtime || {}, {
       updateRuntime: function(views, viewData) {
@@ -19,7 +18,6 @@ if(window){
     });
 
     if(window.onRuntimeLoad) {
-      console.log("calling onRuntimeLoad")
       window.onRuntimeLoad();
     }
 
