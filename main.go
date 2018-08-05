@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -11,33 +10,27 @@ import (
 	"github.com/zserge/webview"
 )
 
-func isBlackListed(file_name string) bool {
-	black_listed := [3]string{"views", "runtime", "js"}
+// TODO: remove need for global variables
 
-	for i := 0; i < len(black_listed); i++ {
-		if file_name == black_listed[i] {
-			return true
-		}
-	}
-	return false
-}
-
+// "filename.html": view-file
 var view_state map[string]view
+
+// "filename.js" : js-file
 var js_state map[string]js
+
 var view_folder = "/views"
 var runtime_js_path = "/runtime"
 var js_folder = "/js"
+
+// need not be global now
 var root string
 
 // foreign function interface data
+// from js to send messages via json
 var ffiData map[string]interface{}
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
+// data is stringified json from js
+// type is necessary in that json, other keys are different for each type
 func handleRPC(w webview.WebView, data string) {
 	err := json.Unmarshal([]byte(data), &ffiData)
 	checkErr(err)
@@ -58,22 +51,7 @@ func handleRPC(w webview.WebView, data string) {
 	}
 }
 
-func getFileData(file_path string) []byte {
-	data, err := ioutil.ReadFile(file_path)
-	checkErr(err)
-	return data
-}
-
-func getRootPath() string {
-	if root == "" {
-		cwd, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		checkErr(err)
-		root = cwd
-	}
-
-	return root
-}
-
+// TODO: refactor
 func getWalker(walkerType string) func(string, os.FileInfo, error) error {
 	switch {
 	case walkerType == "view":
