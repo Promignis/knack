@@ -38,6 +38,8 @@ func handleRPC(w webview.WebView, data string) {
 
 	fmt.Printf("Action type : %s\n", fnType)
 
+	// TODO: standardize all these actions
+	// and format
 	switch {
 	case fnType == "alert":
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
@@ -48,6 +50,15 @@ func handleRPC(w webview.WebView, data string) {
 			err := w.Eval(string(js_state[fileName].data))
 			checkErr(err)
 		})
+	case fnType == "open_file":
+		file_path := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
+		_ = file_path
+	case fnType == "open_dir":
+		directory_path := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
+		_ = directory_path
+	case fnType == "save_file":
+		save_path := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
+		_ = save_path
 	}
 }
 
@@ -103,7 +114,8 @@ func main() {
 		w := webview.New(webview.Settings{
 			URL: `data:text/html,` + url.PathEscape(string(index_view.data)),
 			ExternalInvokeCallback: handleRPC,
-			Debug: true,
+			Debug:     true,
+			Resizable: true,
 		})
 
 		defer w.Exit()
