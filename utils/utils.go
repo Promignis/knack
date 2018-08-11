@@ -2,9 +2,10 @@ package utils
 
 import (
 	"io/ioutil"
-	"knack/constants"
 	"os"
 	"path/filepath"
+
+	"github.com/promignis/knack/constants"
 )
 
 // get file data if it is there

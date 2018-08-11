@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"knack/bridge"
-	"knack/constants"
-	"knack/fs"
-	"knack/utils"
+	"github.com/promignis/knack/bridge"
+	"github.com/promignis/knack/constants"
+	"github.com/promignis/knack/fs"
+	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
 )

@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"knack/fs"
-	"knack/utils"
+
+	"github.com/promignis/knack/fs"
+	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
 )
@@ -28,17 +29,17 @@ func HandleRPC(w webview.WebView, data string) {
 
 	// TODO: standardize all these actions
 	// and format
-	switch {
-	case fnType == "alert":
+	switch fnType {
+	case "alert":
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
-	case fnType == "onload":
-	case fnType == "load_js":
+	case "onload":
+	case "load_js":
 		fileName := ffiData["fileName"].(string)
 		w.Dispatch(func() {
 			err := w.Eval(string(fs.FileState[fileName].Data()))
 			utils.CheckErr(err)
 		})
-	case fnType == "load_css":
+	case "load_css":
 		fileName := ffiData["fileName"].(string)
 		cssData := string(fs.FileState[fileName].Data())
 		w.Dispatch(func() {
@@ -55,13 +56,13 @@ func HandleRPC(w webview.WebView, data string) {
 				head.appendChild(style);
 				})("%s")`, template.JSEscapeString(cssData)))
 		})
-	case fnType == "open_file":
+	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
 		_ = filePath
-	case fnType == "open_dir":
+	case "open_dir":
 		directoryPath := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
 		_ = directoryPath
-	case fnType == "save_file":
+	case "save_file":
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
 		_ = savePath
 	// default is not being reached
