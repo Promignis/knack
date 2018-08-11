@@ -1,7 +1,16 @@
-## knack
+## Knack
+Knack is a framework to build cross platform applications using the web stack - 
+HTML, CSS and Javascript.
+It is built using https://github.com/zserge/webview as the webview.
+The size is much smaller compared to electron.
 
-## native package
+It is under development.
 
-### OSX
+`go get github.com/promignis/knack`
+
+
+## OSX
+### Build
 `./build-app.sh`
+
 `./run-app.sh`
