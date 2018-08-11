@@ -7,8 +7,8 @@ import (
 )
 
 // get file data if it is there
-func getFileData(file_path string) []byte {
-	data, err := ioutil.ReadFile(file_path)
+func getFileData(filePath string) []byte {
+	data, err := ioutil.ReadFile(filePath)
 	checkErr(err)
 	return data
 }
@@ -28,11 +28,11 @@ func getRootPath() string {
 // black listed names,
 // walk is being called for the
 // root path as well
-func isBlackListed(file_name string) bool {
-	black_listed := [3]string{"views", "runtime", "js"}
+func isBlackListed(fileName string) bool {
+	blackListed := [4]string{ViewFolder, RuntimeJsPath, JsFolder, CssFolder}
 
-	for i := 0; i < len(black_listed); i++ {
-		if file_name == black_listed[i] {
+	for i := 0; i < len(blackListed); i++ {
+		if fileName == blackListed[i] {
 			return true
 		}
 	}
