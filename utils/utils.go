@@ -1,19 +1,11 @@
 package utils
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/promignis/knack/constants"
 )
-
-// get file data if it is there
-func GetFileData(filePath string) []byte {
-	data, err := ioutil.ReadFile(filePath)
-	CheckErr(err)
-	return data
-}
 
 // get path of the binary when it is running
 // for getting relative paths to other folders

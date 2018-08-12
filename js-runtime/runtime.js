@@ -1,21 +1,6 @@
 if(window){
   (function(){
-    window.__runtime = Object.assign(window.__runtime || {}, {
-      updateRuntime: function(views, viewData) {
-        var views = views ? views : [];
-        var viewData = viewData ? viewData : {};
-        window.__runtime = Object.assign(window.__runtime, {
-          views: views,
-          viewData: viewData
-        })
-      },
-      loadJs: function(jsFileName) {
-        window.external.invoke(JSON.stringify({type: 'load_js', fileName: jsFileName}))
-      },
-      alert: function(msg) {
-        window.external.invoke(JSON.stringify({type: 'alert', msg: msg}))
-      }
-    });
+    window._runtime = Object.assign(window._runtime || {}, JsRuntime());
 
     if(window.onRuntimeLoad) {
       window.onRuntimeLoad();
@@ -26,3 +11,40 @@ if(window){
   console.error("window not found");
 }
 
+// returns the runtime functions in object that will be merged
+// with _runtime
+function JsRuntime() {
+  return {
+    callbackIds: {},
+    updateRuntime: function(views, viewData) {
+      var views = views ? views : [];
+      var viewData = viewData ? viewData : {};
+      window._runtime = Object.assign(window._runtime, {
+        views: views,
+        viewData: viewData
+      })
+    },
+    loadJs: function(jsFileName) {
+      window.external.invoke(JSON.stringify({type: 'load_js', fileName: jsFileName}))
+    },
+    alert: function(msg) {
+      window.external.invoke(JSON.stringify({type: 'alert', msg: msg}))
+    },
+    resolveCallback: function(callbackId, data) {
+      _runtime.callbackIds[callbackId](data)
+      delete _runtime.callbackIds[callbackId]
+    },
+    openFile: function(cb) {
+      var cbId = _runtime.getCbId(cb)
+      window.external.invoke(JSON.stringify({type: 'open_file', callbackId: cbId}))
+    },
+    getCbId: function(cb) {
+      var cbLen = Object.keys(_runtime.callbackIds).length
+      _runtime.callbackIds[cbLen] = cb
+      return cbLen
+    },
+    loadCss: function(cssFileName) {
+      window.external.invoke(JSON.stringify({type: 'load_css', fileName: cssFileName}))
+    }
+  }
+}

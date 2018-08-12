@@ -7,6 +7,7 @@ import (
 
 	"github.com/promignis/knack/fs"
 	"github.com/promignis/knack/utils"
+	"github.com/promignis/knack/validation"
 
 	"github.com/zserge/webview"
 )
@@ -35,16 +36,11 @@ func HandleRPC(w webview.WebView, data string) {
 	case "onload":
 	case "load_js":
 		fileName := ffiData["fileName"].(string)
-		w.Dispatch(func() {
-			err := w.Eval(string(fs.FileState[fileName].Data()))
-			utils.CheckErr(err)
-		})
+		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
 		cssData := string(fs.FileState[fileName].Data())
-		w.Dispatch(func() {
-			// Inject CSS
-			w.Eval(fmt.Sprintf(`(function(css){
+		js := fmt.Sprintf(`(function(css){
 				var style = document.createElement('style');
 				var head = document.head || document.getElementsByTagName('head')[0];
 				style.setAttribute('type', 'text/css');
@@ -54,17 +50,24 @@ func HandleRPC(w webview.WebView, data string) {
 					style.appendChild(document.createTextNode(css));
 				}
 				head.appendChild(style);
-				})("%s")`, template.JSEscapeString(cssData)))
-		})
+				})("%s")`, template.JSEscapeString(cssData))
+		RunJsInWebview(w, js)
 	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
-		_ = filePath
+		// transfer binary data as natively as possible
+		// profile for speed
+		data := string(fs.GetFileData(filePath))
+		callbackId := int(ffiData["callbackId"].(float64))
+		ResolveJsCallback(w, callbackId, data)
 	case "open_dir":
 		directoryPath := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
 		_ = directoryPath
 	case "save_file":
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
-		_ = savePath
+		// check if path is valid
+		if validation.IsValidPath(savePath) {
+			// create / append
+		}
 	// default is not being reached
 	default:
 		fmt.Errorf("No such action %s", fnType)

@@ -1,6 +1,8 @@
 package constants
 
-var ViewFolder = "views"
-var RuntimeJsPath = "js-runtime"
-var JsFolder = "js"
-var CssFolder = "styles"
+const (
+	ViewFolder    = "views"
+	RuntimeJsPath = "js-runtime"
+	JsFolder      = "js"
+	CssFolder     = "styles"
+)

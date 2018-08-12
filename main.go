@@ -24,7 +24,7 @@ func addFileToState(path string, info os.FileInfo, err error) error {
 
 	if !utils.IsBlackListed(fileName) {
 
-		data := utils.GetFileData(path)
+		data := fs.GetFileData(path)
 
 		// remove null check and make them globally
 		// for now
