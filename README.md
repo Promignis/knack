@@ -10,7 +10,9 @@ It is under development.
 
 
 ## OSX
+
 ### Build
 `./build-app.sh`
 
+### Run
 `./run-app.sh`
