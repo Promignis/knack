@@ -14,14 +14,19 @@ Place html files in `views`  folder (will pick `index.html` default)
       js   files in `js`     folder
 
 ### Inject
-`_runtime.loadCss("filename.css")`
-`_runtime.loadJs("bundle.js")`
+```js
+_runtime.loadCss("filename.css") // injects from ./styles/filename.css
+
+_runtime.loadJs("bundle.js") // injects from ./js/bundle.js
+```
 
 ### Files
 Open file and get data in callback(will open native file browser)
-`_runtime.openFile((fileData) => {
+```js
+_runtime.openFile((fileData) => {
       // do something with file data
-})`
+})
+```
 
 ## OSX
 
