@@ -35,8 +35,7 @@ function JsRuntime() {
       delete _runtime.callbackIds[callbackId]
     },
     openFile: function(cb) {
-      var cbId = _runtime.getCbId(cb)
-      window.external.invoke(JSON.stringify({type: 'open_file', callbackId: cbId}))
+      window.external.invoke(JSON.stringify({type: 'open_file', callbackId: _runtime.getCbId(cb)}))
     },
     getCbId: function(cb) {
       var cbLen = Object.keys(_runtime.callbackIds).length
