@@ -39,6 +39,7 @@ func HandleRPC(w webview.WebView, data string) {
 		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
+		fmt.Printf("%s", fileName)
 		cssData := string(fs.FileState[fileName].Data())
 		js := fmt.Sprintf(`(function(css){
 				var style = document.createElement('style');

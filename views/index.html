@@ -11,7 +11,7 @@
     // this will happen implicitly later
     window.external.invoke(JSON.stringify({type: "load_js", fileName: "runtime.js"}))
     window.onRuntimeLoad = function() {
-      window.__runtime.loadJs("bundle.js")
+      window._runtime.loadJs("bundle.js")
     }
   </script>
 </html>

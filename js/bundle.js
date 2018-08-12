@@ -7,6 +7,6 @@ input.addEventListener("change", function(ev) {
 }, false)
 
 btn.addEventListener('click', function(e) {
-  window.__runtime.alert(currentText)
+  _runtime.alert(currentText)
 }, false)
 
