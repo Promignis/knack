@@ -20,3 +20,17 @@ func RunJsInWebview(w webview.WebView, js string) {
 		w.Eval(js)
 	})
 }
+
+func CssInsertViaJs(cssData string) string {
+	return fmt.Sprintf(`(function(css){
+				var style = document.createElement('style');
+				var head = document.head || document.getElementsByTagName('head')[0];
+				style.setAttribute('type', 'text/css');
+				if (style.styleSheet) {
+					style.styleSheet.cssText = css;
+				} else {
+					style.appendChild(document.createTextNode(css));
+				}
+				head.appendChild(style);
+				})("%s")`, template.JSEscapeString(cssData))
+}

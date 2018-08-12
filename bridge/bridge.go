@@ -3,7 +3,6 @@ package bridge
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 
 	"github.com/promignis/knack/fs"
 	"github.com/promignis/knack/utils"
@@ -39,20 +38,8 @@ func HandleRPC(w webview.WebView, data string) {
 		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
-		fmt.Printf("%s", fileName)
 		cssData := string(fs.FileState[fileName].Data())
-		js := fmt.Sprintf(`(function(css){
-				var style = document.createElement('style');
-				var head = document.head || document.getElementsByTagName('head')[0];
-				style.setAttribute('type', 'text/css');
-				if (style.styleSheet) {
-					style.styleSheet.cssText = css;
-				} else {
-					style.appendChild(document.createTextNode(css));
-				}
-				head.appendChild(style);
-				})("%s")`, template.JSEscapeString(cssData))
-		RunJsInWebview(w, js)
+		RunJsInWebview(w, CssInsertViaJs(cssData))
 	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
 		// transfer binary data as natively as possible
@@ -65,9 +52,10 @@ func HandleRPC(w webview.WebView, data string) {
 		_ = directoryPath
 	case "save_file":
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
+		fileData := ffiData["fileData"].(string)
 		// check if path is valid
 		if validation.IsValidPath(savePath) {
-			// create / append
+			fs.WriteFileData(savePath, []byte(fileData))
 		}
 	// default is not being reached
 	default:
