@@ -16,9 +16,13 @@ Current usage(it will change)
 
 ### Inject
 ```js
-_runtime.loadCss("filename.css") // injects from ./styles/filename.css
+window.onRuntimeLoad = function() {
+      _runtime.loadView("contacts.html") // replaces the current html with specified file
 
-_runtime.loadJs("bundle.js") // injects from ./js/bundle.js
+      _runtime.loadCss("filename.css") // injects from ./styles/filename.css
+
+      _runtime.loadJs("bundle.js") // injects from ./js/bundle.js
+}
 ```
 
 ### Files
