@@ -37,6 +37,9 @@ function JsRuntime() {
     openFile: function(cb) {
       window.external.invoke(JSON.stringify({type: 'open_file', callbackId: _runtime.getCbId(cb)}))
     },
+    saveFile: function(fileData) {
+      window.external.invoke(JSON.stringify({type: 'save_file', fileData: fileData}))
+    },
     getCbId: function(cb) {
       var cbLen = Object.keys(_runtime.callbackIds).length
       _runtime.callbackIds[cbLen] = cb

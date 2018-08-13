@@ -9,11 +9,10 @@ It is under development.
 `go get github.com/promignis/knack`
 
 Current usage(it will change)
-Place html files in `views`  folder (will pick `index.html` default)
 
-      css  files in `styles` folder
-
-      js   files in `js`     folder
+      html files in views  folder (will pick index.html default)
+      css  files in styles folder
+      js   files in js     folder
 
 ### Inject
 ```js
@@ -28,6 +27,11 @@ Open file and get data in callback(will open native file browser)
 _runtime.openFile((fileData) => {
       // do something with file data
 })
+```
+Save file with `fileData`
+
+```js
+_runtime.saveFile(fileData)
 ```
 
 ## OSX
