@@ -6,7 +6,6 @@ import (
 
 	"github.com/promignis/knack/fs"
 	"github.com/promignis/knack/utils"
-	"github.com/promignis/knack/validation"
 
 	"github.com/zserge/webview"
 )
@@ -23,7 +22,7 @@ func HandleRPC(w webview.WebView, data string) {
 	err := json.Unmarshal([]byte(data), &ffiData)
 
 	utils.CheckErr(err)
-	fnType := ffiData["type"]
+	fnType := string(ffiData["type"].(string))
 
 	fmt.Printf("Action type : %s\n", fnType)
 
@@ -46,19 +45,23 @@ func HandleRPC(w webview.WebView, data string) {
 		// profile for speed
 		data := string(fs.GetFileData(filePath))
 		callbackId := int(ffiData["callbackId"].(float64))
-		ResolveJsCallback(w, callbackId, data)
+		args := []string{data}
+		cbData := &CallbackData{
+			callbackId,
+			args,
+		}
+		ResolveJsCallback(w, cbData)
 	case "open_dir":
 		directoryPath := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
 		_ = directoryPath
 	case "save_file":
+		// savePath should be correct as it is coming from the GUI
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
 		fileData := ffiData["fileData"].(string)
-		// check if path is valid
-		if validation.IsValidPath(savePath) {
-			fs.WriteFileData(savePath, []byte(fileData))
-		}
+
+		fs.WriteFileData(savePath, []byte(fileData))
 	// default is not being reached
 	default:
-		fmt.Errorf("No such action %s", fnType)
+		fmt.Printf("No such action %s", fnType)
 	}
 }

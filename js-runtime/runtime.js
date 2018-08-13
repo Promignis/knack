@@ -30,9 +30,12 @@ function JsRuntime() {
     alert: function(msg) {
       window.external.invoke(JSON.stringify({type: 'alert', msg: msg}))
     },
-    resolveCallback: function(callbackId, data) {
-      _runtime.callbackIds[callbackId](data)
-      delete _runtime.callbackIds[callbackId]
+    resolveCallback: function(resolveObjJSONStr) {
+      const resolveObj = JSON.parse(resolveObjJSONStr)
+      const cbId = resolveObj.CallbackId
+      const args = resolveObj.Args
+      _runtime.callbackIds[cbId].apply(this, args)
+      delete _runtime.callbackIds[cbId]
     },
     openFile: function(cb) {
       window.external.invoke(JSON.stringify({type: 'open_file', callbackId: _runtime.getCbId(cb)}))
