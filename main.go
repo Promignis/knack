@@ -47,13 +47,19 @@ func main() {
 	filepath.Walk(filepath.Join(root, constants.JsFolder), addFileToState)
 	filepath.Walk(filepath.Join(root, constants.CssFolder), addFileToState)
 
-	if index_view, ok := fs.FileState["index.html"]; ok {
+	if indexView, ok := fs.FileState[constants.DefaultIndexFile]; ok {
 		w := webview.New(webview.Settings{
-			URL: `data:text/html,` + url.PathEscape(string(index_view.Data())),
+			URL: `data:text/html,` + url.PathEscape(string(indexView.Data())),
 			ExternalInvokeCallback: bridge.HandleRPC,
 			Debug:     true,
 			Resizable: true,
 		})
+
+		if runtimeJs, ok := fs.FileState[constants.RuntimeJsFile]; ok {
+			bridge.RunJsInWebview(w, string(runtimeJs.Data()))
+		} else {
+			panic("failed to load runtime.js")
+		}
 
 		defer w.Exit()
 

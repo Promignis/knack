@@ -19,12 +19,13 @@ func ResolveJsCallback(w webview.WebView, cbData *CallbackData) {
 }
 
 func RunJsInWebview(w webview.WebView, js string) {
+	fmt.Println(js)
 	w.Dispatch(func() {
 		w.Eval(js)
 	})
 }
 
-func CssInsertViaJs(cssData string) string {
+func InjectCss(cssData string) string {
 	return fmt.Sprintf(`(function(css){
 				var style = document.createElement('style');
 				var head = document.head || document.getElementsByTagName('head')[0];
@@ -36,4 +37,10 @@ func CssInsertViaJs(cssData string) string {
 				}
 				head.appendChild(style);
 				})("%s")`, template.JSEscapeString(cssData))
+}
+
+func InjectHtml(htmlData string) string {
+	return fmt.Sprintf(`document.open("text/html");
+				document.write(`+"`%s`"+`);
+				document.close();`, htmlData)
 }

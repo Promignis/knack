@@ -31,14 +31,17 @@ func HandleRPC(w webview.WebView, data string) {
 	switch fnType {
 	case "alert":
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
-	case "onload":
+	case "load_html":
+		fileName := ffiData["fileName"].(string)
+		htmlData := string(fs.FileState[fileName].Data())
+		RunJsInWebview(w, InjectHtml(htmlData))
 	case "load_js":
 		fileName := ffiData["fileName"].(string)
 		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
 		cssData := string(fs.FileState[fileName].Data())
-		RunJsInWebview(w, CssInsertViaJs(cssData))
+		RunJsInWebview(w, InjectCss(cssData))
 	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
 		// transfer binary data as natively as possible
