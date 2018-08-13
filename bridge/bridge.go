@@ -33,14 +33,14 @@ func HandleRPC(w webview.WebView, data string) {
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
 	case "load_html":
 		fileName := ffiData["fileName"].(string)
-		htmlData := string(fs.FileState[fileName].Data())
+		htmlData := fs.FileState[fileName].StringData()
 		RunJsInWebview(w, InjectHtml(htmlData))
 	case "load_js":
 		fileName := ffiData["fileName"].(string)
-		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
+		RunJsInWebview(w, fs.FileState[fileName].StringData())
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
-		cssData := string(fs.FileState[fileName].Data())
+		cssData := string(fs.FileState[fileName].StringData())
 		RunJsInWebview(w, InjectCss(cssData))
 	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")

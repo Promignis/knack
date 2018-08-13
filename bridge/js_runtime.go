@@ -19,7 +19,6 @@ func ResolveJsCallback(w webview.WebView, cbData *CallbackData) {
 }
 
 func RunJsInWebview(w webview.WebView, js string) {
-	fmt.Println(js)
 	w.Dispatch(func() {
 		w.Eval(js)
 	})

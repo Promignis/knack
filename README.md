@@ -17,7 +17,7 @@ Current usage(it will change)
 ### Inject
 ```js
 window.onRuntimeLoad = function() {
-      _runtime.loadView("contacts.html") // replaces the current html with specified file
+      _runtime.loadView("contacts.html") // replaces the current html with ./views/contacts.html
 
       _runtime.loadCss("filename.css") // injects from ./styles/filename.css
 
