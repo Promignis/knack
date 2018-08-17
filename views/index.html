@@ -6,7 +6,6 @@
   </body>
   <script>
     // this will happen implicitly later
-    window.external.invoke(JSON.stringify({type: "load_js", fileName: "runtime.js"}))
     window.onRuntimeLoad = function() {
       window._runtime.loadJs("zeno-bundle.js")
     }

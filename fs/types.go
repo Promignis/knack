@@ -6,6 +6,10 @@ type File struct {
 	data     []byte
 }
 
+func (f *File) StringData() string {
+	return string(f.data)
+}
+
 func (f *File) Data() []byte {
 	return f.data
 }

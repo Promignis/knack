@@ -8,6 +8,35 @@ It is under development.
 
 `go get github.com/promignis/knack`
 
+Current usage(it will change)
+
+      html files in views  folder (will pick index.html default)
+      css  files in styles folder
+      js   files in js     folder
+
+### Inject
+```js
+window.onRuntimeLoad = function() {
+      _runtime.loadView("contacts.html") // replaces the current html with ./views/contacts.html
+
+      _runtime.loadCss("filename.css") // injects from ./styles/filename.css
+
+      _runtime.loadJs("bundle.js") // injects from ./js/bundle.js
+}
+```
+
+### Files
+Open file and get data in callback(will open native file browser)
+```js
+_runtime.openFile((fileData) => {
+      // do something with file data
+})
+```
+Save file with `fileData`
+
+```js
+_runtime.saveFile(fileData)
+```
 
 ## OSX
 

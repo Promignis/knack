@@ -3,11 +3,9 @@ package bridge
 import (
 	"encoding/json"
 	"fmt"
-	"html/template"
 
 	"github.com/promignis/knack/fs"
 	"github.com/promignis/knack/utils"
-	"github.com/promignis/knack/validation"
 
 	"github.com/zserge/webview"
 )
@@ -24,7 +22,7 @@ func HandleRPC(w webview.WebView, data string) {
 	err := json.Unmarshal([]byte(data), &ffiData)
 
 	utils.CheckErr(err)
-	fnType := ffiData["type"]
+	fnType := string(ffiData["type"].(string))
 
 	fmt.Printf("Action type : %s\n", fnType)
 
@@ -33,44 +31,40 @@ func HandleRPC(w webview.WebView, data string) {
 	switch fnType {
 	case "alert":
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
-	case "onload":
+	case "load_html":
+		fileName := ffiData["fileName"].(string)
+		htmlData := fs.FileState[fileName].StringData()
+		RunJsInWebview(w, InjectHtml(htmlData))
 	case "load_js":
 		fileName := ffiData["fileName"].(string)
-		RunJsInWebview(w, string(fs.FileState[fileName].Data()))
+		RunJsInWebview(w, fs.FileState[fileName].StringData())
 	case "load_css":
 		fileName := ffiData["fileName"].(string)
-		fmt.Printf("%s", fileName)
-		cssData := string(fs.FileState[fileName].Data())
-		js := fmt.Sprintf(`(function(css){
-				var style = document.createElement('style');
-				var head = document.head || document.getElementsByTagName('head')[0];
-				style.setAttribute('type', 'text/css');
-				if (style.styleSheet) {
-					style.styleSheet.cssText = css;
-				} else {
-					style.appendChild(document.createTextNode(css));
-				}
-				head.appendChild(style);
-				})("%s")`, template.JSEscapeString(cssData))
-		RunJsInWebview(w, js)
+		cssData := string(fs.FileState[fileName].StringData())
+		RunJsInWebview(w, InjectCss(cssData))
 	case "open_file":
 		filePath := w.Dialog(webview.DialogTypeOpen, 0, "Open file", "")
 		// transfer binary data as natively as possible
 		// profile for speed
 		data := string(fs.GetFileData(filePath))
 		callbackId := int(ffiData["callbackId"].(float64))
-		ResolveJsCallback(w, callbackId, data)
+		args := []string{data}
+		cbData := &CallbackData{
+			callbackId,
+			args,
+		}
+		ResolveJsCallback(w, cbData)
 	case "open_dir":
 		directoryPath := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
 		_ = directoryPath
 	case "save_file":
+		// savePath should be correct as it is coming from the GUI
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
-		// check if path is valid
-		if validation.IsValidPath(savePath) {
-			// create / append
-		}
+		fileData := ffiData["fileData"].(string)
+
+		fs.WriteFileData(savePath, []byte(fileData))
 	// default is not being reached
 	default:
-		fmt.Errorf("No such action %s", fnType)
+		fmt.Printf("No such action %s", fnType)
 	}
 }

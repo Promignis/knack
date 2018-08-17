@@ -21,8 +21,8 @@ func GetRootPath() string {
 func IsBlackListed(fileName string) bool {
 	blackListed := [4]string{constants.ViewFolder, constants.RuntimeJsPath, constants.JsFolder, constants.CssFolder}
 
-	for i := 0; i < len(blackListed); i++ {
-		if fileName == blackListed[i] {
+	for _, blackListedFile := range blackListed {
+		if fileName == blackListedFile {
 			return true
 		}
 	}
