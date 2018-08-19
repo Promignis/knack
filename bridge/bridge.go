@@ -25,7 +25,7 @@ func HandleRPC(w webview.WebView, data string) {
 	utils.CheckErr(err)
 	fnType := string(ffiData["type"].(string))
 
-	// fmt.Printf("Action type : %s\n", fnType)
+	fmt.Printf("Action type : %s\n", fnType)
 
 	// TODO: standardize all these actions
 	// and format

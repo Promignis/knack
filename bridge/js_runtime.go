@@ -46,5 +46,4 @@ func InjectHtml(htmlData string) string {
 
 func InjectImage(imageData string, imageId string) string {
 	return fmt.Sprintf(`document.getElementById("%s").src ="data:image/png;base64,%s";`, imageId, imageData)
-	fmt.Println(a)
 }
