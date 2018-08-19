@@ -8,11 +8,12 @@ It is under development.
 
 `go get github.com/promignis/knack`
 
-Current usage(it will change)
+Current usage(**it will change**)
 
-      html files in views  folder (will pick index.html default)
-      css  files in styles folder
-      js   files in js     folder
+      html  files in views  folder (will pick index.html default)
+      css   files in styles folder
+      js    files in js     folder
+      image files in images folder
 
 ### Inject
 ```js
@@ -22,6 +23,8 @@ window.onRuntimeLoad = function() {
       _runtime.loadCss("filename.css") // injects from ./styles/filename.css
 
       _runtime.loadJs("bundle.js") // injects from ./js/bundle.js
+
+      _runtime.loadImage("test.png", "test") // injects ./images/test.png to img tag with id "test"
 }
 ```
 

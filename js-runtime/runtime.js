@@ -53,6 +53,9 @@ function JsRuntime(){
     },
     loadView: function(viewName) {
       sendAction({type: 'load_html', fileName: viewName})
+    },
+    loadImage: function(imageName, imageId) {
+      sendAction({type: 'load_img', imageName, imageId})
     }
   }
 }

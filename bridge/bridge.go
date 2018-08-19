@@ -1,6 +1,7 @@
 package bridge
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
@@ -24,7 +25,7 @@ func HandleRPC(w webview.WebView, data string) {
 	utils.CheckErr(err)
 	fnType := string(ffiData["type"].(string))
 
-	fmt.Printf("Action type : %s\n", fnType)
+	// fmt.Printf("Action type : %s\n", fnType)
 
 	// TODO: standardize all these actions
 	// and format
@@ -63,7 +64,12 @@ func HandleRPC(w webview.WebView, data string) {
 		fileData := ffiData["fileData"].(string)
 
 		fs.WriteFileData(savePath, []byte(fileData))
-	// default is not being reached
+	case "load_img":
+		imageName := ffiData["imageName"].(string)
+		imageId := ffiData["imageId"].(string)
+		imageData := fs.FileState[imageName].Data()
+		base64Img := base64.StdEncoding.EncodeToString(imageData)
+		RunJsInWebview(w, InjectImage(base64Img, imageId))
 	default:
 		fmt.Printf("No such action %s", fnType)
 	}

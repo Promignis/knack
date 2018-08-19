@@ -19,7 +19,7 @@ func GetRootPath() string {
 // walk is being called for the
 // root path as well
 func IsBlackListed(fileName string) bool {
-	blackListed := [4]string{constants.ViewFolder, constants.RuntimeJsPath, constants.JsFolder, constants.CssFolder}
+	blackListed := [5]string{constants.ViewFolder, constants.RuntimeJsPath, constants.JsFolder, constants.CssFolder, constants.ImageFoler}
 
 	for _, blackListedFile := range blackListed {
 		if fileName == blackListedFile {
