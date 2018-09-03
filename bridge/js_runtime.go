@@ -10,8 +10,18 @@ import (
 	"github.com/zserge/webview"
 )
 
+func HandleCallback(w webview.WebView, ffiData map[string]interface{}, args []string) {
+	callbackId := int(ffiData["callbackId"].(float64))
+	cbData := &CallbackData{
+		callbackId,
+		args,
+	}
+	// maybe put log for helping debug with callback and data sent
+	resolveJsCallback(w, cbData)
+}
+
 // send a value to a js callback
-func ResolveJsCallback(w webview.WebView, cbData *CallbackData) {
+func resolveJsCallback(w webview.WebView, cbData *CallbackData) {
 	callbackStrData, err := json.Marshal(cbData)
 	utils.CheckErr(err)
 	js := fmt.Sprintf(`_runtime.resolveCallback("%s")`, template.JSEscapeString(string(callbackStrData)))

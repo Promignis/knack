@@ -1,6 +1,5 @@
 if(window){
   (function(){
-
     window._runtime = Object.assign(window._runtime || {}, JsRuntime());
 
     if(window.onRuntimeLoad) {
@@ -56,6 +55,41 @@ function JsRuntime(){
     },
     loadImage: function(imageName, imageId) {
       sendAction({type: 'load_img', imageName, imageId})
+    },
+    getFileWalker: function(filePath, cb) {
+      return new FileWalker(filePath, cb)
+      // sendAction({type: 'file_walker', callbackId: _runtime.getCbId(cb), filePath})
+    },
+    getFileStat: function(filePath, cb) {
+      return new FileStat(filePath, cb)
     }
   }
+}
+
+// turn to more functional approach later
+function FileWalker(filePath, cb) {
+  this.filePath = filePath
+
+  this.cbId = _runtime.getCbId(cb)
+
+  this.fileStat = new FileStat(filePath, (fileStat) => {
+    this.fileStat = fileStat
+  })
+  this.walk()
+}
+
+FileWalker.prototype.walk = function() {
+  sendAction({type: 'file_walker', filePath: this.filePath, callbackId: this.cbId})
+}
+
+function FileStat(filePath, cb) {
+  this.filePath = filePath
+  this.cbId = _runtime.getCbId(cb)
+  this.getFileStat()
+}
+
+FileStat.prototype.getFileStat = function() {
+  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, (fileStat) => {
+    this.fileStat = fileStat
+  })
 }

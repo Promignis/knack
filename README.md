@@ -10,10 +10,10 @@ It is under development.
 
 Current usage(**it will change**)
 
-      html  files in views  folder (will pick index.html default)
-      css   files in styles folder
-      js    files in js     folder
-      image files in images folder
+      html/svg  files in views  folder (will pick index.html by default)
+      css       files in styles folder
+      js        files in js     folder
+      image     files in images folder
 
 ### Inject
 ```js

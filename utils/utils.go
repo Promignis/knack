@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -32,6 +33,8 @@ func IsBlackListed(fileName string) bool {
 // tmp error function
 func CheckErr(err error) {
 	if err != nil {
+		// print the error
+		fmt.Print(err.Error())
 		panic(err)
 	}
 }
