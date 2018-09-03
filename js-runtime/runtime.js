@@ -1,6 +1,35 @@
+// TODO: Add webpack to clean up pollyfilling for windows
+// Pollyfilling  Object.assign
+if (typeof Object.assign != 'function') {
+  Object.defineProperty(Object, "assign", {
+    value: function assign(target, varArgs) {
+      'use strict';
+      if (target == null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) { 
+          for (var nextKey in nextSource) {
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+      }
+      return to;
+    },
+    writable: true,
+    configurable: true
+  });
+}
+
 if(window){
   (function(){
-
     window._runtime = Object.assign(window._runtime || {}, JsRuntime());
 
     if(window.onRuntimeLoad) {
@@ -55,7 +84,7 @@ function JsRuntime(){
       sendAction({type: 'load_html', fileName: viewName})
     },
     loadImage: function(imageName, imageId) {
-      sendAction({type: 'load_img', imageName, imageId})
+      sendAction({type: 'load_img', imageName: imageId})
     }
   }
 }
