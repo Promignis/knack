@@ -13,9 +13,9 @@ import (
 )
 
 type StrMetric struct {
-	InputStr   string
+	inputStr   string
 	DictStr    string
-	Ratio      float64
+	ratio      float64
 	Levenstein int
 }
 
@@ -25,7 +25,7 @@ func (s StrMetrics) Len() int { return len(s) }
 
 func (s StrMetrics) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 
-func (s StrMetrics) Less(i, j int) bool { return s[i].Ratio <= s[j].Ratio }
+func (s StrMetrics) Less(i, j int) bool { return s[i].ratio <= s[j].ratio }
 
 // TODO: make it concurrent with goroutines
 func GetFuzzyCandidates(searchTerm string, dict []string, maxDistance int) StrMetrics {
