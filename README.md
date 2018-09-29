@@ -41,6 +41,17 @@ Save file with `fileData`
 _runtime.saveFile(fileData)
 ```
 
+### Fuzzy match
+Do fuzzy match over a any dictionary
+```js
+// dict, word, levenshtein_distance, callback
+
+_runtime.fuzzyMatch(["asd", "abc"], "ab", 1, (results) => {
+  // returns array of results
+  // in this case "abc" as 1 distance away from "ab"
+})
+```
+
 ## OSX
 
 ### Build
