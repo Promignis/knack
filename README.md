@@ -52,6 +52,18 @@ _runtime.fuzzyMatch(["asd", "abc"], "ab", 1, (results) => {
 })
 ```
 
+### Examples
+Fuzzy search on files
+
+```js
+_runtime.getFileWalker("../", (fileList) => {
+  let fileDict = JSON.parse(fileList).map(file => file.name)
+  _runtime.fuzzyMatch(fileDict, "main.g", 3, (fuzzyResults) => {
+    
+  })
+})
+```
+
 ## OSX
 
 ### Build
