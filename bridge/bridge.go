@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/promignis/knack/fs"
+	"github.com/promignis/knack/fuzzy"
 	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
@@ -81,6 +82,20 @@ func HandleRPC(w webview.WebView, data string) {
 		stringifiedStat, err := json.Marshal(stat)
 		utils.CheckErr(err)
 		args := []string{string(stringifiedStat)}
+		HandleCallback(w, ffiData, args)
+	case "fuzzy_match":
+		dict := ffiData["dict"].(string)
+		var nDict []string
+		err = json.Unmarshal([]byte(dict), &nDict)
+		utils.CheckErr(err)
+		word := ffiData["word"].(string)
+		distance := int(ffiData["distance"].(float64))
+
+		candidates := fuzzy.GetFuzzyCandidates(word, nDict, distance)
+
+		stringified, err := json.Marshal(candidates)
+		utils.CheckErr(err)
+		args := []string{string(stringified)}
 		HandleCallback(w, ffiData, args)
 	default:
 		fmt.Printf("No such action %s", fnType)

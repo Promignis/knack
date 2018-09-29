@@ -62,6 +62,9 @@ function JsRuntime(){
     },
     getFileStat: function(filePath, cb) {
       return new FileStat(filePath, cb)
+    },
+    fuzzyMatch: function(dict, word, distance, cb) {
+      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word, distance, callbackId: _runtime.getCbId(cb)})
     }
   }
 }
