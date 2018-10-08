@@ -1,10 +1,12 @@
 package bridge
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 
 	"github.com/promignis/knack/fs"
+	"github.com/promignis/knack/fuzzy"
 	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
@@ -28,6 +30,7 @@ func HandleRPC(w webview.WebView, data string) {
 
 	// TODO: standardize all these actions
 	// and format
+	// find better way to add than switch case
 	switch fnType {
 	case "alert":
 		w.Dialog(webview.DialogTypeAlert, 0, "title", ffiData["msg"].(string))
@@ -47,13 +50,7 @@ func HandleRPC(w webview.WebView, data string) {
 		// transfer binary data as natively as possible
 		// profile for speed
 		data := string(fs.GetFileData(filePath))
-		callbackId := int(ffiData["callbackId"].(float64))
-		args := []string{data}
-		cbData := &CallbackData{
-			callbackId,
-			args,
-		}
-		ResolveJsCallback(w, cbData)
+		HandleCallback(w, ffiData, []string{data})
 	case "open_dir":
 		directoryPath := w.Dialog(webview.DialogTypeOpen, webview.DialogFlagDirectory, "Open directory", "")
 		_ = directoryPath
@@ -61,9 +58,45 @@ func HandleRPC(w webview.WebView, data string) {
 		// savePath should be correct as it is coming from the GUI
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
 		fileData := ffiData["fileData"].(string)
-
 		fs.WriteFileData(savePath, []byte(fileData))
-	// default is not being reached
+	case "load_img":
+		imageName := ffiData["imageName"].(string)
+		imageId := ffiData["imageId"].(string)
+		imageData := fs.FileState[imageName].Data()
+		base64Img := base64.StdEncoding.EncodeToString(imageData)
+		RunJsInWebview(w, InjectImage(base64Img, imageId))
+	case "file_walker":
+		filePath := ffiData["filePath"].(string)
+		fileList := fs.GetFileList(filePath)
+		stringified, err := json.Marshal(fileList)
+		utils.CheckErr(err)
+
+		fileData := []string{string(stringified)}
+
+		HandleCallback(w, ffiData, fileData)
+	case "file_stat":
+		filePath := ffiData["filePath"].(string)
+		stat := fs.GetFileStat(filePath)
+		// centralize json marshalling and instead of crash due to wrong data being sent
+		// better errors
+		stringifiedStat, err := json.Marshal(stat)
+		utils.CheckErr(err)
+		args := []string{string(stringifiedStat)}
+		HandleCallback(w, ffiData, args)
+	case "fuzzy_match":
+		dict := ffiData["dict"].(string)
+		var nDict []string
+		err = json.Unmarshal([]byte(dict), &nDict)
+		utils.CheckErr(err)
+		word := ffiData["word"].(string)
+		distance := int(ffiData["distance"].(float64))
+
+		candidates := fuzzy.GetFuzzyCandidates(word, nDict, distance)
+
+		stringified, err := json.Marshal(candidates)
+		utils.CheckErr(err)
+		args := []string{string(stringified)}
+		HandleCallback(w, ffiData, args)
 	default:
 		fmt.Printf("No such action %s", fnType)
 	}

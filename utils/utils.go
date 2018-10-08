@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/promignis/knack/constants"
 )
@@ -19,7 +21,7 @@ func GetRootPath() string {
 // walk is being called for the
 // root path as well
 func IsBlackListed(fileName string) bool {
-	blackListed := [4]string{constants.ViewFolder, constants.RuntimeJsPath, constants.JsFolder, constants.CssFolder}
+	blackListed := [5]string{constants.ViewFolder, constants.RuntimeJsPath, constants.JsFolder, constants.CssFolder, constants.ImageFoler}
 
 	for _, blackListedFile := range blackListed {
 		if fileName == blackListedFile {
@@ -32,6 +34,22 @@ func IsBlackListed(fileName string) bool {
 // tmp error function
 func CheckErr(err error) {
 	if err != nil {
+		// print the error
+		fmt.Print(err.Error())
 		panic(err)
 	}
+}
+
+func getOS() string {
+	return runtime.GOOS
+}
+
+func IsUnixBased() bool {
+
+	// darwin freebsd linux
+	if getOS() != "windows" {
+		return true
+	}
+
+	return false
 }
