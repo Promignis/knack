@@ -110,9 +110,10 @@ function FileWalker(filePath, cb) {
   this.filePath = filePath
 
   this.cbId = _runtime.getCbId(cb)
-
-  this.fileStat = new FileStat(filePath, (fileStat) => {
-    this.fileStat = fileStat
+  // TODO: Add webpack instead of using _this so that arrow functions can be used in windows
+  _this = this
+  this.fileStat = new FileStat(filePath, function(fileStat, _this){
+    _this.fileStat = fileStat
   })
   this.walk()
 }
@@ -128,7 +129,8 @@ function FileStat(filePath, cb) {
 }
 
 FileStat.prototype.getFileStat = function() {
-  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, (fileStat) => {
-    this.fileStat = fileStat
+  _this = this
+  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, function(fileStat){
+    _this.fileStat = fileStat
   })
 }
