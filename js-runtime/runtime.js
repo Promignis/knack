@@ -13,7 +13,7 @@ if (typeof Object.assign != 'function') {
       for (var index = 1; index < arguments.length; index++) {
         var nextSource = arguments[index];
 
-        if (nextSource != null) { 
+        if (nextSource != null) {
           for (var nextKey in nextSource) {
             if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
               to[nextKey] = nextSource[nextKey];
@@ -32,8 +32,10 @@ if(window){
   (function(){
     window._runtime = Object.assign(window._runtime || {}, JsRuntime());
 
-    if(window.onRuntimeLoad) {
-      window.onRuntimeLoad();
+    window.onload = function() {
+      if(window.onRuntimeLoad) {
+        window.onRuntimeLoad();
+      }
     }
 
   })();

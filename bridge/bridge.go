@@ -106,11 +106,6 @@ func HandleRPC(w webview.WebView, data string) {
 		filename := ffiData["filename"].(string)
 		stringifiedJson := persistance.Get(filename)
 		args := []string{stringifiedJson}
-		callbackId := int(ffiData["callbackId"].(float64))
-		cbData := &CallbackData{
-			callbackId,
-			args,
-		}
 		HandleCallback(w, ffiData, args)
 	default:
 		fmt.Printf("No such action %s", fnType)
