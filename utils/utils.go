@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/promignis/knack/constants"
 )
@@ -32,6 +34,22 @@ func IsBlackListed(fileName string) bool {
 // tmp error function
 func CheckErr(err error) {
 	if err != nil {
+		// print the error
+		fmt.Print(err.Error())
 		panic(err)
 	}
+}
+
+func getOS() string {
+	return runtime.GOOS
+}
+
+func IsUnixBased() bool {
+
+	// darwin freebsd linux
+	if getOS() != "windows" {
+		return true
+	}
+
+	return false
 }

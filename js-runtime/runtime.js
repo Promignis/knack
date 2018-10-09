@@ -84,13 +84,51 @@ function JsRuntime(){
       sendAction({type: 'load_html', fileName: viewName})
     },
     loadImage: function(imageName, imageId) {
-      sendAction({type: 'load_img', imageName: imageId})
+      sendAction({type: 'load_img', imageName: imageName, imageId: imageId})
+    },
+    getFileWalker: function(filePath, cb) {
+      return new FileWalker(filePath, cb)
+      // sendAction({type: 'file_walker', callbackId: _runtime.getCbId(cb), filePath})
+    },
+    getFileStat: function(filePath, cb) {
+      return new FileStat(filePath, cb)
+    },
+    fuzzyMatch: function(dict, word, distance, cb) {
+      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word: word, distance: distance, callbackId: _runtime.getCbId(cb)})
     },
     setToFile: function(filename, stringifiedJson) {
-      sendAction({type: 'set_to_file', filename: filename,stringifiedJson: stringifiedJson})
+      sendAction({type: 'set_to_file', filename: filename, stringifiedJson: stringifiedJson})
     },
     getFromFile: function(filename, cb) {
       sendAction({type: 'get_from_file', filename: filename, callbackId: _runtime.getCbId(cb)})
     }
   }
+}
+
+// turn to more functional approach later
+function FileWalker(filePath, cb) {
+  this.filePath = filePath
+
+  this.cbId = _runtime.getCbId(cb)
+
+  this.fileStat = new FileStat(filePath, (fileStat) => {
+    this.fileStat = fileStat
+  })
+  this.walk()
+}
+
+FileWalker.prototype.walk = function() {
+  sendAction({type: 'file_walker', filePath: this.filePath, callbackId: this.cbId})
+}
+
+function FileStat(filePath, cb) {
+  this.filePath = filePath
+  this.cbId = _runtime.getCbId(cb)
+  this.getFileStat()
+}
+
+FileStat.prototype.getFileStat = function() {
+  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, (fileStat) => {
+    this.fileStat = fileStat
+  })
 }

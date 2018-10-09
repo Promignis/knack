@@ -10,10 +10,10 @@ It is under development.
 
 Current usage(**it will change**)
 
-      html  files in views  folder (will pick index.html default)
-      css   files in styles folder
-      js    files in js     folder
-      image files in images folder
+      html/svg  files in views  folder (will pick index.html by default)
+      css       files in styles folder
+      js        files in js     folder
+      image     files in images folder
 
 ### Inject
 ```js
@@ -39,6 +39,29 @@ Save file with `fileData`
 
 ```js
 _runtime.saveFile(fileData)
+```
+
+### Fuzzy match
+Do fuzzy match over a any dictionary
+```js
+// dict, word, levenshtein_distance, callback
+
+_runtime.fuzzyMatch(["asd", "abc"], "ab", 1, (results) => {
+  // returns array of results
+  // in this case "abc" as 1 distance away from "ab"
+})
+```
+
+### Examples
+Fuzzy search on files
+
+```js
+_runtime.getFileWalker("../", (fileList) => {
+  let fileDict = JSON.parse(fileList).map(file => file.name)
+  _runtime.fuzzyMatch(fileDict, "main.g", 3, (fuzzyResults) => {
+    
+  })
+})
 ```
 
 ## OSX

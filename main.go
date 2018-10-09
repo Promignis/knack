@@ -32,6 +32,7 @@ func main() {
 			Resizable: true,
 		})
 
+		// race condition happening
 		if runtimeJs, ok := fs.FileState[constants.RuntimeJsFile]; ok {
 			bridge.RunJsInWebview(w, runtimeJs.StringData())
 		} else {
