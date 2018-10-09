@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/promignis/knack/fs"
+	"github.com/promignis/knack/persistance"
 	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
@@ -62,7 +63,6 @@ func HandleRPC(w webview.WebView, data string) {
 		// savePath should be correct as it is coming from the GUI
 		savePath := w.Dialog(webview.DialogTypeSave, 0, "Save file", "")
 		fileData := ffiData["fileData"].(string)
-
 		fs.WriteFileData(savePath, []byte(fileData))
 	case "load_img":
 		imageName := ffiData["imageName"].(string)
@@ -70,6 +70,20 @@ func HandleRPC(w webview.WebView, data string) {
 		imageData := fs.FileState[imageName].Data()
 		base64Img := base64.StdEncoding.EncodeToString(imageData)
 		RunJsInWebview(w, InjectImage(base64Img, imageId))
+	case "set_to_file":
+		filename := ffiData["filename"].(string)
+		stringifiedJson := ffiData["stringifiedJson"].(string)
+		persistance.Set(filename, stringifiedJson)
+	case "get_from_file":
+		filename := ffiData["filename"].(string)
+		stringifiedJson := persistance.Get(filename)
+		args := []string{stringifiedJson}
+		callbackId := int(ffiData["callbackId"].(float64))
+		cbData := &CallbackData{
+			callbackId,
+			args,
+		}
+		ResolveJsCallback(w, cbData)
 	default:
 		fmt.Printf("No such action %s", fnType)
 	}

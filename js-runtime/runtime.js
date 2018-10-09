@@ -85,6 +85,12 @@ function JsRuntime(){
     },
     loadImage: function(imageName, imageId) {
       sendAction({type: 'load_img', imageName: imageId})
+    },
+    setToFile: function(filename, stringifiedJson) {
+      sendAction({type: 'set_to_file', filename: filename,stringifiedJson: stringifiedJson})
+    },
+    getFromFile: function(filename, cb) {
+      sendAction({type: 'get_from_file', filename: filename, callbackId: _runtime.getCbId(cb)})
     }
   }
 }
