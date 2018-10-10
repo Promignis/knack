@@ -7,6 +7,7 @@ import (
 
 	"github.com/promignis/knack/fs"
 	"github.com/promignis/knack/fuzzy"
+	"github.com/promignis/knack/persistance"
 	"github.com/promignis/knack/utils"
 
 	"github.com/zserge/webview"
@@ -96,6 +97,15 @@ func HandleRPC(w webview.WebView, data string) {
 		stringified, err := json.Marshal(candidates)
 		utils.CheckErr(err)
 		args := []string{string(stringified)}
+		HandleCallback(w, ffiData, args)
+	case "set_to_file":
+		filename := ffiData["filename"].(string)
+		stringifiedJson := ffiData["stringifiedJson"].(string)
+		persistance.Set(filename, stringifiedJson)
+	case "get_from_file":
+		filename := ffiData["filename"].(string)
+		stringifiedJson := persistance.Get(filename)
+		args := []string{stringifiedJson}
 		HandleCallback(w, ffiData, args)
 	default:
 		fmt.Printf("No such action %s", fnType)

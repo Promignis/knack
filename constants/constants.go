@@ -8,4 +8,5 @@ const (
 	ImageFoler       = "images"
 	DefaultIndexFile = "index.html"
 	RuntimeJsFile    = "runtime.js"
+	Manifest         = "manifest.json"
 )

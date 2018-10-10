@@ -67,7 +67,18 @@ _runtime.getFileWalker("../", (fileList) => {
 ## OSX
 
 ### Build
+Mac and Linux:
 `./build-app.sh`
 
 ### Run
 `./run-app.sh`
+
+Windows(Dev):
+`run-app-dev.bat`
+
+Windows(Prod):
+`run-app.bat`
+
+### Debugging in windows
+Insert this line of code into any html page that you want to debug
+`<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>`
