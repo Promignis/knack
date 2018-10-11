@@ -1,9 +1,41 @@
+// TODO: Add webpack to clean up pollyfilling for windows
+// Pollyfilling  Object.assign
+if (typeof Object.assign != 'function') {
+  Object.defineProperty(Object, "assign", {
+    value: function assign(target, varArgs) {
+      'use strict';
+      if (target == null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) {
+          for (var nextKey in nextSource) {
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+      }
+      return to;
+    },
+    writable: true,
+    configurable: true
+  });
+}
+
 if(window){
   (function(){
     window._runtime = Object.assign(window._runtime || {}, JsRuntime());
 
-    if(window.onRuntimeLoad) {
-      window.onRuntimeLoad();
+    window.onload = function() {
+      if(window.onRuntimeLoad) {
+        window.onRuntimeLoad();
+      }
     }
 
   })();
@@ -54,7 +86,7 @@ function JsRuntime(){
       sendAction({type: 'load_html', fileName: viewName})
     },
     loadImage: function(imageName, imageId) {
-      sendAction({type: 'load_img', imageName, imageId})
+      sendAction({type: 'load_img', imageName: imageName, imageId: imageId})
     },
     getFileWalker: function(filePath, cb) {
       return new FileWalker(filePath, cb)
@@ -64,7 +96,13 @@ function JsRuntime(){
       return new FileStat(filePath, cb)
     },
     fuzzyMatch: function(dict, word, distance, cb) {
-      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word, distance, callbackId: _runtime.getCbId(cb)})
+      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word: word, distance: distance, callbackId: _runtime.getCbId(cb)})
+    },
+    setToFile: function(filename, stringifiedJson) {
+      sendAction({type: 'set_to_file', filename: filename, stringifiedJson: stringifiedJson})
+    },
+    getFromFile: function(filename, cb) {
+      sendAction({type: 'get_from_file', filename: filename, callbackId: _runtime.getCbId(cb)})
     }
   }
 }
@@ -74,9 +112,10 @@ function FileWalker(filePath, cb) {
   this.filePath = filePath
 
   this.cbId = _runtime.getCbId(cb)
-
-  this.fileStat = new FileStat(filePath, (fileStat) => {
-    this.fileStat = fileStat
+  // TODO: Add webpack instead of using _this so that arrow functions can be used in windows
+  _this = this
+  this.fileStat = new FileStat(filePath, function(fileStat, _this){
+    _this.fileStat = fileStat
   })
   this.walk()
 }
@@ -92,7 +131,8 @@ function FileStat(filePath, cb) {
 }
 
 FileStat.prototype.getFileStat = function() {
-  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, (fileStat) => {
-    this.fileStat = fileStat
+  _this = this
+  sendAction({type: 'file_stat', filePath: this.filePath, callbackId: this.cbId}, function(fileStat){
+    _this.fileStat = fileStat
   })
 }
