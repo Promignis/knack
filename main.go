@@ -30,6 +30,8 @@ func main() {
 			ExternalInvokeCallback: bridge.HandleRPC,
 			Debug:     true,
 			Resizable: true,
+      Height:    2560,
+      Width:     1600,
 		})
 
 		// race condition happening
