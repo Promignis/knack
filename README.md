@@ -35,6 +35,12 @@ _runtime.openFile((fileData) => {
       // do something with file data
 })
 ```
+if callback not present returns Promise
+```js
+_runtime.openFile().then(fileData => {
+
+})
+```
 Save file with `fileData`
 
 ```js
@@ -49,6 +55,12 @@ Do fuzzy match over a any dictionary
 _runtime.fuzzyMatch(["asd", "abc"], "ab", 1, (results) => {
   // returns array of results
   // in this case "abc" as 1 distance away from "ab"
+})
+```
+if callback not present it returns Promise
+```js
+_runtime.fuzzyMatch(["asd", "abc"], "ab", 1).then(results => {
+      // output
 })
 ```
 
