@@ -35,6 +35,12 @@ _runtime.openFile((fileData) => {
       // do something with file data
 })
 ```
+if callback not present returns Promise
+```js
+_runtime.openFile().then(fileData => {
+
+})
+```
 Save file with `fileData`
 
 ```js
@@ -51,6 +57,12 @@ _runtime.fuzzyMatch(["asd", "abc"], "ab", 1, (results) => {
   // in this case "abc" as 1 distance away from "ab"
 })
 ```
+if callback not present it returns Promise
+```js
+_runtime.fuzzyMatch(["asd", "abc"], "ab", 1).then(results => {
+      // output
+})
+```
 
 ### Examples
 Fuzzy search on files
@@ -63,6 +75,18 @@ _runtime.getFileWalker("../", (fileList) => {
   })
 })
 ```
+
+if you have [babel-async-await](https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-async-to-generator) setup
+```js
+_runtime.getFileWalker("../", async (fileList) => {
+  let fileDict = JSON.parse(fileList).map(file => file.name)
+  let fuzzyResults = await _runtime.fuzzyMatch(fileDict, "main.g", 3)
+})
+```
+better use via Promises
+
+`getFileWalker is planned to return Promise in future`
+
 
 ## OSX
 

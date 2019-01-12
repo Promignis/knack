@@ -68,7 +68,13 @@ function JsRuntime(){
       // can have issues?
       delete _runtime.callbackIds[cbId]
     },
+    // if callback is empty returns promise
     openFile: function(cb) {
+      if(!cb){
+        return new Promise((resolve, reject) => {
+          sendAction({type: 'open_file', callbackId: _runtime.getCbId(resolve)})
+        })
+      }
       sendAction({type: 'open_file', callbackId: _runtime.getCbId(cb)})
     },
     saveFile: function(fileData) {
@@ -90,18 +96,28 @@ function JsRuntime(){
     },
     getFileWalker: function(filePath, cb) {
       return new FileWalker(filePath, cb)
-      // sendAction({type: 'file_walker', callbackId: _runtime.getCbId(cb), filePath})
     },
     getFileStat: function(filePath, cb) {
       return new FileStat(filePath, cb)
     },
+    // if callback is empty then returns promise
     fuzzyMatch: function(dict, word, distance, cb) {
-      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word: word, distance: distance, callbackId: _runtime.getCbId(cb)})
+      if(!cb) {
+        return new Promise((resolve, reject) => {
+          sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word, distance, callbackId: _runtime.getCbId(resolve)})
+        })
+      }
+      sendAction({type: 'fuzzy_match', dict: JSON.stringify(dict), word, distance, callbackId: _runtime.getCbId(cb)})
     },
     setToFile: function(filename, stringifiedJson) {
       sendAction({type: 'set_to_file', filename: filename, stringifiedJson: stringifiedJson})
     },
     getFromFile: function(filename, cb) {
+      if(!cb) {
+        return new Promise((resolve, reject) => {
+          sendAction({type: 'get_from_file', filename: filename, callbackId: _runtime.getCbId(cb)})
+        })
+      }
       sendAction({type: 'get_from_file', filename: filename, callbackId: _runtime.getCbId(cb)})
     }
   }
@@ -124,6 +140,7 @@ FileWalker.prototype.walk = function() {
   sendAction({type: 'file_walker', filePath: this.filePath, callbackId: this.cbId})
 }
 
+// get stat for file path
 function FileStat(filePath, cb) {
   this.filePath = filePath
   this.cbId = _runtime.getCbId(cb)
